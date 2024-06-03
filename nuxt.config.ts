@@ -1,21 +1,25 @@
 let itemsUrl = {}
-import country from './assets/server/countries.json';
+import country from './server/assets/countries.json';
 country.forEach(x => {
-  // if (
-  //   x.name.common.toLowerCase().startsWith('a') 
-  //   || x.name.common.toLowerCase().startsWith('b') 
-  //   || x.name.common.toLowerCase().startsWith('c')
-  //   || x.name.common.toLowerCase().startsWith('d')
-  //   || x.name.common.toLowerCase().startsWith('e')
-  //   || x.name.common.toLowerCase().startsWith('f')
-  //   || x.name.common.toLowerCase().startsWith('g')
-  //   || x.name.common.toLowerCase().startsWith('h')
-  //   || x.name.common.toLowerCase().startsWith('i')
-  //   || x.name.common.toLowerCase().startsWith('j')
-  //   || x.name.common.toLowerCase().startsWith('k')
-  //   || x.name.common.toLowerCase().startsWith('l')
-  //   || x.name.common.toLowerCase().startsWith('m')
-  // ) {
+  if (
+    // Prerending is not working for all data
+    // gets stuck on the middle without any error
+    // so just building routes for countries that
+    // start with a to m
+    x.name.common.toLowerCase().startsWith('a') 
+    || x.name.common.toLowerCase().startsWith('b') 
+    || x.name.common.toLowerCase().startsWith('c')
+    || x.name.common.toLowerCase().startsWith('d')
+    || x.name.common.toLowerCase().startsWith('e')
+    || x.name.common.toLowerCase().startsWith('f')
+    || x.name.common.toLowerCase().startsWith('g')
+    || x.name.common.toLowerCase().startsWith('h')
+    || x.name.common.toLowerCase().startsWith('i')
+    || x.name.common.toLowerCase().startsWith('j')
+    || x.name.common.toLowerCase().startsWith('k')
+    || x.name.common.toLowerCase().startsWith('l')
+    || x.name.common.toLowerCase().startsWith('m')
+  ) {
     let key = `/country/${x.name.common}`;
     let isrKey = `/isr/country/${x.name.common}`;
     let swrKey = `/swr/country/${x.name.common}`;
@@ -27,7 +31,7 @@ country.forEach(x => {
       [swrKey]: { swr: true },
       [prerenderKey]: { prerender: true },
     }
-  // }
+  }
 })
 
 
@@ -64,20 +68,15 @@ export default defineNuxtConfig({
     '/country': { ssr: false },
     '/university': { ssr: false },
     '/isr/country': { isr: true },
-    '/isr/university': { isr: 60 },
+    '/isr/university': { isr: 120 },
     '/swr/country': { swr: true },
-    '/swr/university': { swr: 60 },
+    '/swr/university': { swr: 120 },
     '/prerender/country': { prerender: true },
     '/prerender/university': { prerender: true },
     ...itemsUrl
   },
   nitro: {
-    storage: {
-      dataFileSystem: {
-        driver: 'fs',
-        base: 'assets/server/',
-      },
-    },
+    preset: 'vercel-edge',
     prerender: {
       failOnError: false,
       crawlLinks: false,
@@ -87,4 +86,7 @@ export default defineNuxtConfig({
   },
   // logLevel: 'verbose',
   // debug: true
+  runtimeConfig:{
+    region: process.env.VERCEL_REGION
+  }
 })
