@@ -11,6 +11,6 @@ export default defineEventHandler(async event => {
 })
 
 function getUniversity(universities: any[], universityName: string|undefined){
-    const university = universities.find(x=>x.name.toLocaleLowerCase() === universityName?.toLocaleLowerCase())
+    const university = universities.find(x=>convertToDashes(x.name) === convertToDashes(universityName))
     return university === undefined ? {} : university;
 }

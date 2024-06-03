@@ -59,7 +59,7 @@ const totalItems = computed(()=>{
   return 0;
 });
 const paginated = computed(() => {
-  let mappedFilter = filtered.value.map(x => ({ ...x, encodedName: encodeURIComponent(x.name) }))
+  let mappedFilter = filtered.value.map(x => ({ ...x, encodedName: encodeURIComponent(convertToDashes(x.name)) }))
   return mappedFilter.slice(currentPage.value*pageItems.value, (currentPage.value*pageItems.value)+pageItems.value);
 })
 const updatePage = (pageState: PageState) => {

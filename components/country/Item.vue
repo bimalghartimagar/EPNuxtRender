@@ -60,13 +60,19 @@ const generatedDateTime = useState(() => new Date().toUTCString())
 const { data: country } = await useAsyncData(`countries-${route.params.name}`,
   () => $fetch(`/api/country/${route.params.name}`), {
   getCachedData(key) {
-    return nuxtApp.payload.data[key] || nuxtApp.static.data[key] ||
-      nuxtApp.payload.data['countries']?.items?.find(x => x.name === route.params.name);
+    if (nuxtApp.payload.data[key] || nuxtApp.static.data[key]) {
+      return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+    } else if (nuxtApp.payload.data['countries']?.items?.find(x => convertToDashes(x.name.common) === route.params.name)) {
+      return {
+        datetime: null,
+        item: nuxtApp.payload.data['countries']?.items?.find(x => convertToDashes(x.name.common) === route.params.name)
+      }
+    }
+    return undefined;
   }
 })
+
 const flagName = computed(() => {
   return country.value?.item.name?.common.replace(/\s/g, /-/g).toLowerCase();
 })
 </script>
-
-<style></style>

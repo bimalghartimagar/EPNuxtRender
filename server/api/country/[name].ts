@@ -12,6 +12,6 @@ export default defineEventHandler(async event => {
 })
 
 function getCountry(countries: any[], countryName: string|undefined){
-    const country = countries.find(x=>x.name.common.toLocaleLowerCase() === countryName?.toLocaleLowerCase())
+    const country = countries.find(x=>convertToDashes(x.name.common) === convertToDashes(countryName ?? ''))
     return country === undefined ? {} : country;
 }

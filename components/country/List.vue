@@ -17,7 +17,7 @@
           :key="index"
         >
           <template #title>
-            {{ index + 1 }}. <NuxtLink :to="`${route.path}/${item.name.common}`">{{ item.name.common }}</NuxtLink>
+            {{ index + 1 }}. <NuxtLink :to="`${route.path}/${item.encodedName}`">{{ item.name.common }}</NuxtLink>
           </template>
         </Card>
       </TransitionGroup>
@@ -46,9 +46,10 @@
       || x.name.official.toLowerCase().indexOf(searchText.value.toLowerCase()) > -1);
   })
   const paginated = computed(() => {
-    let mappedFilter = filtered.value.map(x=>({...x, encodedName: encodeURIComponent(x.name.common)}))
+    let mappedFilter = filtered.value.map(x=>({...x, encodedName: encodeURIComponent(convertToDashes(x.name.common))}))
     return mappedFilter;
   })
+
   </script>
   
   <style>
