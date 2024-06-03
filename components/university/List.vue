@@ -3,7 +3,7 @@
     <h1>University List  {{ data?.items.length }}</h1>
     <h4 v-if="searchText.trim() !== ''">Results for <span class="underline">{{ searchText }}</span> {{filtered.length}}</h4>
     <h4 v-else><span>Search</span> to filter the list.</h4>
-    <h4 class="text-xs">Server Side Date: {{ data?.datetime }}</h4>
+    <h4 class="text-xs">Server Side Date: {{ generatedDateTime }}</h4>
     <ClientOnly>
       <h4 class="text-xs">Client Side Date: {{ new Date().toUTCString() }}</h4>
     </ClientOnly>
@@ -29,6 +29,8 @@
 
 <script setup lang="ts">
 import type { PageState } from 'primevue/paginator';
+
+const generatedDateTime = useState(()=> new Date().toUTCString())
 
 const nuxtApp = useNuxtApp();
 const searchText = useSearchText();
@@ -61,7 +63,6 @@ const paginated = computed(() => {
   return mappedFilter.slice(currentPage.value*pageItems.value, (currentPage.value*pageItems.value)+pageItems.value);
 })
 const updatePage = (pageState: PageState) => {
-  console.log(pageState)
   currentPage.value = pageState.page;
 }
 </script>

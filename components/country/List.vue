@@ -3,7 +3,7 @@
       <h1>Country List {{ paginated?.length }} / {{ data.items?.length }}</h1>
       <h4 v-if="searchText.trim() !== ''">Results for <span class="underline">{{ searchText }}</span></h4>
       <h4 v-else>Search to filter the list.</h4>
-      <h4 class="text-xs">Server Side Date: {{ data?.datetime }}</h4>
+      <h4 class="text-xs">Server Side Date: {{ generatedDateTime }}</h4>
       <ClientOnly>
         <h4 class="text-xs">Client Side Date: {{ new Date().toUTCString() }}</h4>
       </ClientOnly>
@@ -29,6 +29,9 @@
   const nuxtApp = useNuxtApp();
   const searchText = useSearchText();
   const route = useRoute();
+
+  const generatedDateTime = useState(()=> new Date().toUTCString())
+
   const { data } = await useAsyncData('countries',
   () => $fetch('/api/country'), {
     getCachedData(key) {

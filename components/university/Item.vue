@@ -1,7 +1,7 @@
 <template>
     <div v-if="university">
 
-        <h4 class="text-xs">Server Side Date: {{ university.datetime }}</h4>
+        <h4 class="text-xs">Server Side Date: {{ generatedDateTime }}</h4>
         <ClientOnly>
             <h4 class="text-xs">Client Side Date: {{ new Date().toUTCString() }}</h4>
         </ClientOnly>
@@ -48,6 +48,7 @@
 <script lang="ts" setup>
 const route = useRoute()
 const nuxtApp = useNuxtApp();
+const generatedDateTime = useState(()=> new Date().toUTCString())
 const { data: university, refresh } = await useAsyncData(`universities-${route.params.name}`,
     () => $fetch(`/api/university/${route.params.name}`), {
     getCachedData(key) {
@@ -58,10 +59,6 @@ const { data: university, refresh } = await useAsyncData(`universities-${route.p
         return data;
     }
 })
-// onMounted(async ()=> {
-//     console.log(university.value)
-//     await refresh()
-// })
 const flagName = computed(() => {
     return university.value.item?.name?.replace(/\s/g, /-/g).toLowerCase();
 })
