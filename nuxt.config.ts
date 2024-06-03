@@ -20,15 +20,9 @@ country.forEach(x => {
     || x.name.common.toLowerCase().startsWith('l')
     || x.name.common.toLowerCase().startsWith('m')
   ) {
-    let key = `/country/${x.name.common}`;
-    let isrKey = `/isr/country/${x.name.common}`;
-    let swrKey = `/swr/country/${x.name.common}`;
-    let prerenderKey = `/prerender/country/${x.name.common}`;
+    let prerenderKey = `/prerender/country/${x.area}`;
     itemsUrl = {
       ...itemsUrl,
-      [key]: { ssr: false },
-      [isrKey]: { isr: true },
-      [swrKey]: { swr: true },
       [prerenderKey]: { prerender: true },
     }
   }
@@ -65,12 +59,14 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/': { prerender: true },
-    '/country': { ssr: false },
-    '/university': { ssr: false },
-    '/isr/country': { isr: true },
-    '/isr/university': { isr: 120 },
-    '/swr/country': { swr: true },
-    '/swr/university': { swr: 120 },
+    '/country/**': { ssr: false },
+    '/university/**': { ssr: false },
+    '/isr/country/**': { isr: true },
+    '/isr/university/': { isr: 120 },
+    '/isr/university/**': { isr: 120 },
+    '/swr/country/**': { swr: true },
+    '/swr/university/': { swr: 120 },
+    '/swr/university/**': { swr: 120 },
     '/prerender/country': { prerender: true },
     '/prerender/university': { prerender: true },
     ...itemsUrl
@@ -82,10 +78,7 @@ export default defineNuxtConfig({
       crawlLinks: false,
       concurrency: 50
     },
-    // logLevel: +999,
   },
-  // logLevel: 'verbose',
-  // debug: true
   runtimeConfig:{
     region: process.env.VERCEL_REGION
   }
