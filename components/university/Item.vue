@@ -51,13 +51,10 @@ const nuxtApp = useNuxtApp();
 const { data: university, refresh } = await useAsyncData(`universities-${route.params.name}`,
     () => $fetch(`/api/university/${route.params.name}`), {
     getCachedData(key) {
-        console.log(key);
-        console.log(nuxtApp.payload.data['universities']?.items?.find(x => x.name === route.params.name))
         return nuxtApp.payload.data[key] || nuxtApp.static.data[key] ||
             nuxtApp.payload.data['universities']?.items?.find(x => x.name === route.params.name);
     },
     transform(data){
-        console.log(data)
         return data;
     }
 })

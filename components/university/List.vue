@@ -1,45 +1,34 @@
 <template>
   <div>
-    <h1>University List {{ paginated.length }} / {{ data.length }}</h1>
-    <h4 v-if="searchText.trim() !== ''">Results for <span class="underline">{{ searchText }}</span></h4>
+    <h1>University List  {{ data?.items.length }}</h1>
+    <h4 v-if="searchText.trim() !== ''">Results for <span class="underline">{{ searchText }}</span> {{filtered.length}}</h4>
     <h4 v-else><span>Search</span> to filter the list.</h4>
     <h4 class="text-xs">Server Side Date: {{ data?.datetime }}</h4>
     <ClientOnly>
       <h4 class="text-xs">Client Side Date: {{ new Date().toUTCString() }}</h4>
     </ClientOnly>
-    <!-- <VirtualScroller
-      :items="paginated"
-      :itemSize="50"
-      style="height: 75vh"
-    >
-      <template v-slot:item="{ item, options }">
-        <Card class="m-2 h-4rem">
+    <TransitionGroup
+        name="list"
+        :key="'list-group'"
+      >
+        <Card
+          class="m-2 h-4rem"
+          v-for="(item, index) in paginated"
+          :key="index"
+        >
           <template #title>
-            {{ options.index + 1 }}. <NuxtLink :to="`${route.path}/${item.encodedName}`">{{ `${item.name}, ${item.country}`
+            {{ (currentPage*pageItems) + index + 1 }}. <NuxtLink :to="`${route.path}/${item.encodedName}`">{{ `${item.name}, ${item.country}`
               }}</NuxtLink>
           </template>
-</Card>
-</template>
-</VirtualScroller> -->
-    <RecycleScroller
-      class="scroller"
-      :items="data.items"
-      :item-size="50"
-      :prerender="1000"
-      key-field="name"
-      v-slot="{ item }"
-    >
-      <div class="user">
-        <NuxtLink :to="`${route.path}/${encodeURIComponent(item.name)}`">{{ `${item.name}, ${item.country}`
-              }}</NuxtLink>
-      </div>
-    </RecycleScroller>
+        </Card>
+      </TransitionGroup>
+    <Paginator :rows="pageItems" :totalRecords="filtered.length" :rowsPerPageOptions="[10, 20, 30]"
+    @page="updatePage"></Paginator>
   </div>
 </template>
 
 <script setup lang="ts">
-import { RecycleScroller } from 'vue-virtual-scroller'
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import type { PageState } from 'primevue/paginator';
 
 const nuxtApp = useNuxtApp();
 const searchText = useSearchText();
@@ -59,10 +48,22 @@ const filtered = computed(() => {
     x.name.toLowerCase().indexOf(searchText.value.toLowerCase()) > -1
     || x.country.toLowerCase().indexOf(searchText.value.toLowerCase()) > -1);
 })
+const currentPage = ref(0)
+const pageItems = ref(10);
+const totalItems = computed(()=>{
+  if(data.value){
+    return data.value.items.length;
+  }
+  return 0;
+});
 const paginated = computed(() => {
   let mappedFilter = filtered.value.map(x => ({ ...x, encodedName: encodeURIComponent(x.name) }))
-  return mappedFilter.slice(0, 50);
+  return mappedFilter.slice(currentPage.value*pageItems.value, (currentPage.value*pageItems.value)+pageItems.value);
 })
+const updatePage = (pageState: PageState) => {
+  console.log(pageState)
+  currentPage.value = pageState.page;
+}
 </script>
 
 <style>
